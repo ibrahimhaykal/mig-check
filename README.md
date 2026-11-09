@@ -255,11 +255,24 @@ let (count,): (i64,) = sqlx::query_as(sqlx::AssertSqlSafe(query))
 - Belum aman untuk production.
 - Data yang sedang ditulis bisa menghasilkan false positive.
 
+## Hasil pengujian resume
+
+Tool dimatikan paksa di tengah proses, lalu dilanjutkan dengan `--resume`.
+
+```bash
+timeout -s KILL 3 ./target/debug/mig-check --table sim_orders --chunk-size 100 --delay-ms 50
+./target/debug/mig-check --table sim_orders --chunk-size 100 --delay-ms 50 --resume
+cargo run --bin comparation
+```
+
+Hasil akhirnya tetap `COCOK 100%`: 451 failure ditemukan, 0 terlewat, dan 0 false positive.
+
 ## Berikutnya
 
-- [ ] Resume setelah proses mati
-- [ ] Throttle
+- [x] Resume setelah proses mati
+- [x] Throttle dasar dengan `--delay-ms`
 - [ ] Exit code
 - [ ] Pengecekan ulang drift
+- [ ] Throttle otomatis berdasarkan beban database
 - [ ] Primary key non-numerik dan composite
 - [ ] Dukungan MySQL atau Oracle ke PostgreSQL
